@@ -13,7 +13,7 @@
     }
 
     body {
-      font-family: Arial, sans-serif;
+      font-family: 'Arial', sans-serif;
       background-color: #f9f9f9;
       color: #333;
       line-height: 1.6;
@@ -27,19 +27,33 @@
     }
 
     .logo {
-      width: 120px;
+      width: 150px; /* Adjusted default size */
       margin-bottom: 10px;
+    }
+
+    @media (max-width: 768px) {
+      .logo {
+        width: 180px; /* Larger size for tablets */
+      }
+    }
+
+    @media (max-width: 480px) {
+      .logo {
+        width: 200px; /* Even larger size for mobile phones */
+      }
     }
 
     .navbar-text h1 {
       font-size: 2rem;
       color: #b51f25;
       margin-bottom: 5px;
+      font-weight: bold;
     }
 
     .navbar-text p {
       font-size: 1rem;
       color: #666;
+      font-style: italic;
     }
 
     .events-section {
@@ -52,6 +66,7 @@
       font-size: 2.2rem;
       color: #333;
       margin-bottom: 20px;
+      font-weight: bold;
       position: relative;
     }
 
@@ -113,6 +128,7 @@
       margin: 10px;
       font-size: 1.2rem;
       color: #444;
+      text-align: center;
     }
 
     .event-card:hover {
@@ -146,6 +162,10 @@
       .navbar-text h1 {
         font-size: 1.6rem;
       }
+
+      .navbar-text p {
+        font-size: 0.9rem;
+      }
     }
 
     @media (max-width: 480px) {
@@ -154,7 +174,11 @@
       }
 
       .navbar-text h1 {
-        font-size: 1.2rem;
+        font-size: 1.4rem;
+      }
+
+      .navbar-text p {
+        font-size: 0.8rem;
       }
     }
   </style>
