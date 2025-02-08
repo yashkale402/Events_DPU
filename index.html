@@ -78,6 +78,32 @@
       background: #f2f2f2;
     }
 
+    /* ===================== TABS (Events / Student Corner) ===================== */
+    .tab-nav {
+      display: flex;
+      justify-content: center;
+      margin: 30px 0 20px;
+      gap: 40px;
+    }
+    .tab-link {
+      font-size: 1.2rem;
+      color: #b51f25;
+      cursor: pointer;
+      font-weight: 500;
+      position: relative;
+      padding-bottom: 3px;
+      transition: color 0.3s;
+    }
+    .tab-link:hover {
+      color: #8f1a1f;
+    }
+    .tab-link.active {
+      font-weight: 600;
+      color: #8f1a1f;
+      border-bottom: 2px solid #8f1a1f;
+      padding-bottom: 5px;
+    }
+
     /* ===================== PAGE TITLE ===================== */
     .page-title {
       text-align: center;
@@ -310,6 +336,12 @@
       .page-title {
         font-size: 1.8em;
       }
+      .tab-nav {
+        gap: 20px;
+      }
+      .tab-link {
+        font-size: 1rem;
+      }
     }
   </style>
 </head>
@@ -323,42 +355,81 @@
   </header>
 
   <div class="container">
-    <h2 class="page-title">Events</h2>
-    <div class="title-underline"></div>
-
-    <!-- FILTERS (Type & Year) -->
-    <div class="filter-container">
-      <div class="dropdown-wrapper">
-        <select class="filter-dropdown" id="typeFilter">
-          <option value="all">-- All Types --</option>
-          <option value="Academic">Academic</option>
-          <option value="Workshop">Workshop</option>
-          <option value="Session/Guest Lecture">Session/Guest Lecture</option>
-          <option value="Alumni Activities">Alumni Activities</option>
-          <option value="Preplacement Activity">Preplacement Activity</option>
-          <option value="Social Extension Activities">Social Extension Activities</option>
-          <option value="Career Counseling">Career Counseling</option>
-          <option value="Visit">Visit</option>
-          <option value="Stduent Achivement">Stduent Achivement</option>
-          <option value="Research Activities">Research Activities</option>
-          <option value="Green Campus Initiative">Green Campus Initiative</option>
-        </select>
-      </div>
-
-      <div class="dropdown-wrapper">
-        <select class="filter-dropdown" id="yearFilter">
-          <option value="all">-- All Years --</option>
-          <option value="2024-2025">2024-2025</option>
-          <option value="2020">2020</option>
-        </select>
-      </div>
+    <!-- Tab Navigation: Events / Student Corner -->
+    <div class="tab-nav">
+      <span id="eventsTab" class="tab-link active" onclick="showEvents()">Events</span>
+      <span id="studentCornerTab" class="tab-link" onclick="showStudentCorner()">Student Corner</span>
     </div>
 
-    <!-- EVENTS GRID -->
-    <div class="events-grid" id="eventsGrid"></div>
+    <!-- EVENTS SECTION (shown by default) -->
+    <div id="eventsSection">
+      <h2 class="page-title">Events</h2>
+      <div class="title-underline"></div>
+      <!-- FILTERS (Type & Year) -->
+      <div class="filter-container">
+        <div class="dropdown-wrapper">
+          <select class="filter-dropdown" id="typeFilter">
+            <option value="all">-- All Types --</option>
+            <option value="Academic">Academic</option>
+            <option value="Workshop">Workshop</option>
+            <option value="Session/Guest Lecture">Session/Guest Lecture</option>
+            <option value="Alumni Activities">Alumni Activities</option>
+            <option value="Preplacement Activity">Preplacement Activity</option>
+            <option value="Social Extension Activities">Social Extension Activities</option>
+            <option value="Career Counseling">Career Counseling</option>
+            <option value="Visit">Visit</option>
+            <option value="Stduent Achivement">Stduent Achivement</option>
+            <option value="Research Activities">Research Activities</option>
+            <option value="Green Campus Initiative">Green Campus Initiative</option>
+          </select>
+        </div>
+        <div class="dropdown-wrapper">
+          <select class="filter-dropdown" id="yearFilter">
+            <option value="all">-- All Years --</option>
+            <option value="2024-2025">2024-2025</option>
+            <option value="2020">2020</option>
+          </select>
+        </div>
+      </div>
+      <!-- EVENTS GRID -->
+      <div class="events-grid" id="eventsGrid"></div>
+    </div>
+
+    <!-- STUDENT CORNER SECTION (hidden by default) -->
+    <div id="studentCornerSection" style="display:none;">
+      <h2 class="page-title">Student Corner</h2>
+      <div class="title-underline"></div>
+      <!-- FILTERS (Category, Class, Year) -->
+      <div class="filter-container">
+        <div class="dropdown-wrapper">
+          <select class="filter-dropdown" id="studentCategoryFilter">
+            <option value="all">-- All Categories --</option>
+            <option value="Projects">Projects</option>
+            <option value="Achievements">Achievements</option>
+          </select>
+        </div>
+        <div class="dropdown-wrapper">
+          <select class="filter-dropdown" id="studentClassFilter">
+            <option value="all">-- All Classes --</option>
+            <option value="FY">FY</option>
+            <option value="SY">SY</option>
+            <option value="TY">TY</option>
+          </select>
+        </div>
+        <div class="dropdown-wrapper">
+          <select class="filter-dropdown" id="studentYearFilter">
+            <option value="all">-- All Years --</option>
+            <option value="2024-25">2024-25</option>
+            <option value="2023-24">2023-24</option>
+          </select>
+        </div>
+      </div>
+      <!-- STUDENT CORNER GRID -->
+      <div class="events-grid" id="studentCornerGrid"></div>
+    </div>
   </div>
 
-  <!-- MODAL -->
+  <!-- MODAL (for Events) -->
   <div id="eventModal" class="modal">
     <div class="modal-content">
       <button class="close-button" onclick="closeModal()" aria-label="Close modal">&times;</button>
@@ -366,11 +437,48 @@
     </div>
   </div>
 
+  <!-- MODAL (for Student Corner) -->
+  <div id="studentCornerModal" class="modal">
+    <div class="modal-content">
+      <button class="close-button" onclick="closeStudentCornerModal()" aria-label="Close modal">&times;</button>
+      <div id="studentCornerDetails"></div>
+    </div>
+  </div>
+
   <script>
-    /* 
-      EXACT SAME FULL EVENT DATA from your departmental table,
-      plus placeholder images, for Type+Year filtering.
-    */
+    /****************************************
+     * TAB SWITCH: Events / Student Corner
+     ****************************************/
+    const eventsTab = document.getElementById('eventsTab');
+    const studentTab = document.getElementById('studentCornerTab');
+    const eventsSection = document.getElementById('eventsSection');
+    const studentCornerSection = document.getElementById('studentCornerSection');
+
+    function showEvents() {
+      // Show events section
+      eventsSection.style.display = 'block';
+      // Hide student corner
+      studentCornerSection.style.display = 'none';
+
+      // Update tab styling
+      eventsTab.classList.add('active');
+      studentTab.classList.remove('active');
+    }
+
+    function showStudentCorner() {
+      // Hide events section
+      eventsSection.style.display = 'none';
+      // Show student corner
+      studentCornerSection.style.display = 'block';
+
+      // Update tab styling
+      studentTab.classList.add('active');
+      eventsTab.classList.remove('active');
+    }
+
+    /*******************************
+     * ORIGINAL EVENTS DATA
+     *******************************/
     const placeholderImg = "https://via.placeholder.com/600x400?text=No+Image";
 
     const events = [
@@ -1020,7 +1128,7 @@ CheckList: Not specified`,
       }
     ];
 
-    /* ============ FILTER & RENDER LOGIC ============ */
+    /* ============ FILTER & RENDER LOGIC (EVENTS) ============ */
     function filterEvents() {
       const typeValue = document.getElementById('typeFilter').value;
       const yearValue = document.getElementById('yearFilter').value;
@@ -1066,7 +1174,7 @@ CheckList: Not specified`,
       });
     }
 
-    /* ============ MODAL DISPLAY ============ */
+    /* ============ MODAL DISPLAY (EVENTS) ============ */
     function showEventDetail(eventId) {
       const event = events.find(e => e.id === eventId);
       const modal = document.getElementById('eventModal');
@@ -1107,20 +1215,149 @@ CheckList: Not specified`,
       closeModal();
     }
 
-    // Event listeners for the dropdowns
+    // Event listeners for the dropdowns (EVENTS)
     document.getElementById('typeFilter').addEventListener('change', filterEvents);
     document.getElementById('yearFilter').addEventListener('change', filterEvents);
 
-    // Close modal if user clicks outside the modal content
+    // Close modal if user clicks outside the modal content (EVENTS + Student Corner)
     window.onclick = function(e) {
-      const modal = document.getElementById('eventModal');
-      if (e.target === modal) {
+      const eventModal = document.getElementById('eventModal');
+      const studentCornerModal = document.getElementById('studentCornerModal');
+      if (e.target === eventModal) {
         closeModal();
+      }
+      if (e.target === studentCornerModal) {
+        closeStudentCornerModal();
       }
     };
 
-    // Initial load
+    // Initial load (EVENTS)
     filterEvents();
+
+    /*******************************
+     * STUDENT CORNER DATA & CODE
+     *******************************/
+    const studentCornerData = [
+      {
+        id: 1,
+        title: "Online Quiz Application",
+        category: "Projects",
+        className: "FY",
+        year: "2024-25",
+        description: "A quiz web app built using HTML, CSS, JavaScript.",
+        image: "https://via.placeholder.com/600x400?text=Quiz+App",
+        link: ""
+      },
+      {
+        id: 2,
+        title: "Inter-college Coding Competition Winner",
+        category: "Achievements",
+        className: "TY",
+        year: "2023-24",
+        description: "Won 1st place in the Inter-college coding challenge.",
+        image: "https://via.placeholder.com/600x400?text=Achievement",
+        link: ""
+      },
+      {
+        id: 3,
+        title: "Weather Forecast Project",
+        category: "Projects",
+        className: "SY",
+        year: "2024-25",
+        description: "A Java-based console application fetching real-time weather info.",
+        image: "https://via.placeholder.com/600x400?text=Weather+App",
+        link: ""
+      }
+      // Add more Student Corner items as needed
+    ];
+
+    function filterStudentCorner() {
+      const categoryValue = document.getElementById('studentCategoryFilter').value;
+      const classValue = document.getElementById('studentClassFilter').value;
+      const yearValue = document.getElementById('studentYearFilter').value;
+
+      let filtered = studentCornerData;
+
+      // Filter by Category
+      if (categoryValue !== 'all') {
+        filtered = filtered.filter(item => item.category === categoryValue);
+      }
+
+      // Filter by Class (FY, SY, TY)
+      if (classValue !== 'all') {
+        filtered = filtered.filter(item => item.className === classValue);
+      }
+
+      // Filter by Year (2024-25, 2023-24, etc.)
+      if (yearValue !== 'all') {
+        filtered = filtered.filter(item => item.year === yearValue);
+      }
+
+      renderStudentCornerCards(filtered);
+    }
+
+    function renderStudentCornerCards(dataArray) {
+      const grid = document.getElementById('studentCornerGrid');
+      grid.innerHTML = '';
+
+      dataArray.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'event-card';
+        card.onclick = () => showStudentCornerDetail(item.id);
+
+        card.innerHTML = `
+          <img src="${item.image}" alt="${item.title}" class="event-image">
+          <div class="event-content">
+            <h3 class="event-title">${item.title}</h3>
+            <p><strong>Category:</strong> ${item.category}</p>
+            <p><strong>Class:</strong> ${item.className}</p>
+            <p><strong>Year:</strong> ${item.year}</p>
+            <p>${item.description}</p>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    function showStudentCornerDetail(itemId) {
+      const item = studentCornerData.find(i => i.id === itemId);
+      const modal = document.getElementById('studentCornerModal');
+      const detailsContainer = document.getElementById('studentCornerDetails');
+
+      detailsContainer.innerHTML = `
+        <h2>${item.title}</h2>
+        <div class="year-event">
+          <img src="${item.image}" alt="${item.title}">
+          <p><strong>Category:</strong> ${item.category}</p>
+          <p><strong>Class:</strong> ${item.className}</p>
+          <p><strong>Year:</strong> ${item.year}</p>
+          <p>${item.description}</p>
+          ${
+            item.link
+              ? `<p><strong>More Info:</strong>
+                   <a href="${item.link}" target="_blank">Click Here</a>
+                 </p>`
+              : ""
+          }
+        </div>
+      `;
+
+      modal.style.display = 'flex';
+      document.querySelector('.back-button').style.display = 'block';
+    }
+
+    function closeStudentCornerModal() {
+      document.getElementById('studentCornerModal').style.display = 'none';
+      document.querySelector('.back-button').style.display = 'none';
+    }
+
+    // Event listeners for Student Corner dropdowns
+    document.getElementById('studentCategoryFilter').addEventListener('change', filterStudentCorner);
+    document.getElementById('studentClassFilter').addEventListener('change', filterStudentCorner);
+    document.getElementById('studentYearFilter').addEventListener('change', filterStudentCorner);
+
+    // Initial load for Student Corner
+    filterStudentCorner();
   </script>
 </body>
 </html>
